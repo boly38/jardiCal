@@ -1,0 +1,80 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "description": "garden data application - application sur le calendrier du jardin",
+  "private": true,
+  "author": "Boly38 <boly380@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boly38/jardiCal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/boly38/jardiCal/issues"
+  },
+  "keywords": [
+    "calendrier",
+    "calendar",
+    "jardin",
+    "garden",
+    "flower",
+    "fleurs",
+    "seeds",
+    "graines",
+    "flowering",
+    "floraison",
+    "repicage",
+    "transplanting",
+    "plantation",
+    "planting",
+    "summer",
+    "été"
+  ],
+  "copyright": {
+    "title": "JardiCal",
+    "years": [
+      2020
+    ],
+    "author": "Brice Vandeputte"
+  },
+  "scripts": {
+    "start": "node --unhandled-rejections=strict bin/www",
+    "test": "echo windows test&& set NODE_ENV=test&& mocha tests/*.test.js",
+    "help1": "echo 'Help: npm run help1'",
+    "prod-start": "NODE_ENV=production node --unhandled-rejections=strict bin/www",
+    "travis-test": "echo linux test&& export NODE_ENV=test&& mocha tests/*.test.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jardi-lib": "^1.0.2",
+    "morgan": "~1.9.1",
+    "test-console": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^7.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "lint": "^0.7.0",
+    "mocha": "^8.1.3",
+    "supertest": "^5.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "jshintConfig": {
+    "esversion": 6
+  }
+}

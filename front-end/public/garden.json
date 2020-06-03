@@ -1,0 +1,16 @@
+[
+  {
+    "name": "oignon blanc",
+    "sowBucket": [8,9],
+    "sowGround": [10,11],
+    "harvest": [3,4,5],
+    "sources": [
+      "https://www.gammvert.fr/conseils/conseils-de-jardinage/semer-les-oignons"
+    ]
+  },
+  {
+    "name": "oignon de couleur",
+    "sowGround": [2,3,4],
+    "harvest": [7,8]
+  }
+]
