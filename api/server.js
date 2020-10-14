@@ -6,7 +6,12 @@ const logger = require('morgan');
 
 const CommonService = require('./lib/CommonService');
 const indexRouter = require('./routes/index');
-const docsRouter = require('./routes/docs');
+const v0DocsRouter = require('./routes/apiV0/docs');
+const v0ContributionsRouter = require('./routes/apiV0/contributions');
+
+const API_V0 = '/api/v0';
+const API_V0_DOCS = API_V0+'/docs';
+const API_V0_CONTRIBUTIONS = API_V0+'/contributions';
 
 /**
  * Normalize a port into a number, string, or false.
@@ -44,7 +49,8 @@ function makeServer() {
        app.use(express.static(path.join(__dirname, 'public')));
 
        app.use('/', indexRouter);
-       app.use('/api/docs', docsRouter   );
+       app.use(API_V0_DOCS, v0DocsRouter);
+       app.use(API_V0_CONTRIBUTIONS, v0ContributionsRouter);
 
        // catch 404 and forward to error handler
        app.use(function(req, res, next) {
