@@ -10,35 +10,6 @@ body{
   font-family: 'Noto Sans', sans-serif;
 }
 
-h1{
-  width: 500px;
-  height: 100px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin: -100px 0 0 -275px;
-  font-size: 3.2em;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-  line-height: 100px;
-  color: #aaa;
-}
-
-h2{
-  width: 500px;
-  height: 100px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin: 0 0 0 -225px;
-  font-size: 1.6em;
-  font-weight: 400;
-  text-align: center;
-  line-height: 100%;
-  color: #bbb;
-}
-
 /* The ribbons */
 
 .corner-ribbon{

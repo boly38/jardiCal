@@ -4,6 +4,13 @@
 
 Merci d'utiliser les tickets, et pull-requests.
 
+### DEV
+
+Après avoir cloné, veuillez positionner les hooks git:
+```
+./git/hooks/setup.sh
+```
+
 ### Robot activés
 
 | badge  | nom   | description  |
