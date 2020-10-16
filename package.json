@@ -41,6 +41,7 @@
     "start": "node --unhandled-rejections=strict bin/www",
     "test": "echo windows test&& set NODE_ENV=test&& mocha tests/*.test.js",
     "help1": "echo 'Help: npm run help1'",
+    "rebuild-ui": "pushd front-end&& npm run build&& popd",
     "travis-test": "echo linux travis-test&& export NODE_ENV=test&& mocha tests/*.test.js"
   },
   "dependencies": {

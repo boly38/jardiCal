@@ -1,0 +1,49 @@
+#!/bin/bash
+#.git/hooks/pre-push
+#
+# Hash utilisant la clé comme expression de recherche (Regex) et la valeur
+# associée comme message d’erreur
+declare -A PATTERNS;
+PATTERNS['^[<>|=]{4,}']="Vous avez des marqueurs de conflits qui traînent";
+PATTERNS['TODO|FIXME']="Vous avez des tâches non terminées (FIXME/TODO)";
+
+UI_GENERATION_ISSUE="Vous n'avez pas buildé l'UI depuis plus de 10 minutes, veuillez exécuter \"npm run rebuild-ui\": ancienneté (en min) =>";
+UI_GENERATION_MISSING="Vous n'avez pas buildé l'UI, veuillez exécuter \"npm run rebuild-ui\"";
+UI_PATH=./ui/
+
+# Déclare un tableau d’erreurs vide
+declare -a errors;
+
+# Boucle sur les noms de fichiers présents dans le `stage`/`index` et
+# vérifie que leur contenu contient les chaînes listées dans PATTERNS.
+# Filtre uniquement sur les fichiers ajoutés (A), copiés (C), modifiés (M).
+for file in $(git diff --staged --name-only --diff-filter=ACM); do
+  for elem in ${!PATTERNS[*]} ; do
+    { git show :0:"$file" | grep -Eq ${elem}; } || continue;
+    errors+=("${PATTERNS[${elem}]} in ${file}…");
+  done
+done
+
+
+
+if [ ! -d "${UI_PATH}" ]; then
+  errors+=("${UI_GENERATION_MISSING}")
+else
+    lastUiGenerationTimestamp=$(date -r ./ui/ '+%s')
+    nowTimestamp=$(date '+%s')
+    lastUiGenerationDeltaMin=$(((nowTimestamp - lastUiGenerationTimestamp)/60))
+    if [[ ${lastUiGenerationDeltaMin} > 10 ]]; then
+      errors+=("${UI_GENERATION_ISSUE} ${lastUiGenerationDeltaMin}");
+    fi
+fi
+
+# Affiche les erreurs dans la console.
+author=$(git config --get user.name)
+for error in "${errors[@]}"; do
+  echo -e "$author - ${error}"
+done
+
+# S’il existe au moins une erreur, arrête la création du commit
+if [ ${#errors[@]} -ne 0 ]; then
+  exit 1
+fi
