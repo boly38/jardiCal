@@ -4,17 +4,11 @@ const common = require('./../../lib/CommonService');
 
 router.get('/count', function(req, res, next) {
 
-  common.assumeJd((err, jd) => {
-    if (err) {
-       common.respondError(res,err);
-       return;
-    }
+  common.jdResponse(res, (jd) => {
     jd.count((err,nb) => {
-      if (err) {
-         common.respondError(res,err);
-         return;
-      }
-      res.send({"count":nb});
+      common.errorResponseOrConsume(err, () => {
+        res.send({"count":nb});
+      });
     });
   });
 
@@ -22,19 +16,25 @@ router.get('/count', function(req, res, next) {
 
 router.get('/names', function(req, res, next) {
 
-  common.assumeJd((err, jd) => {
-    if (err) {
-       common.respondError(res,err);
-       return;
-    }
+  common.jdResponse(res, (jd) => {
     var filter = common.reqDocsFilter(req);
     filter.champs = ["nom"];
     jd.listDocuments(filter, (err,docs) => {
-      if (err) {
-         common.respondError(res,err);
-         return;
-      }
-      res.send(docs);
+      common.errorResponseOrConsume(err, () => {
+        res.send(docs);
+      });
+    });
+  });
+
+});
+
+router.post('/samples', function(req, res, next) {
+
+  common.jdResponse(res, (jd) => {
+    jd.addLocalDatabase((err,nbAdded) => {
+      common.errorResponseOrConsume(err, () => {
+        res.send({"count":nbAdded});
+      });
     });
   });
 
@@ -42,20 +42,28 @@ router.get('/names', function(req, res, next) {
 
 router.get('/', function(req, res, next) {
 
-  common.assumeJd((err, jd) => {
-    if (err) {
-      common.respondError(res,err);
-      return;
-    }
+  common.jdResponse(res, (jd) => {
     jd.listDocuments(common.reqDocsFilter(req), (err,docs) => {
-      if (err) {
-         common.respondError(res,err);
-         return;
-      }
-      res.send(docs);
+      common.errorResponseOrConsume(err, () => {
+        res.send(docs);
+      })
     });
   });
 
 });
+
+
+router.delete('/', function(req, res, next) {
+
+  common.jdResponse(res, (jd) => {
+    jd.deleteAllDocuments((err,nb) => {
+      common.errorResponseOrConsume(err, () => {
+        res.send({"count":nb});
+      });
+    });
+  });
+
+});
+
 
 module.exports = router;

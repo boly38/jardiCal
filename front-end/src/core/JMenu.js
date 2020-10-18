@@ -27,9 +27,13 @@ class JMenu extends Component {
         <Navbar.Brand href="/" onClick={this.onMenuClic.bind(this, 'logo')}>JardiCal</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
+          <Nav className="container-fluid">
             <Nav.Link href="/documents" onClick={this.onMenuClic.bind(this, 'entrées')}>Entrées</Nav.Link>
             {/* <Nav.Link href="/month">Par mois</Nav.Link> */}
+        { this.props.roles && this.props.roles.includes('owner') ?
+          ( <Nav.Link href="/owner" onClick={this.onMenuClic.bind(this, 'admin')} className="ml-auto">Admin.</Nav.Link> )
+          : ( null)
+        }
           </Nav>
           {/*
           <Form inline>

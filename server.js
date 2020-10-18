@@ -7,10 +7,12 @@ let extIP = require('ext-ip')();
 
 const CommonService = require('./lib/CommonService');
 const indexRouter = require('./routes/index');
+const v0AboutRouter = require('./routes/apiV0/about');
 const v0DocsRouter = require('./routes/apiV0/docs');
 const v0ContributionsRouter = require('./routes/apiV0/contributions');
 
 const API_V0 = '/api/v0';
+const API_V0_ABOUT = API_V0+'/about';
 const API_V0_DOCS = API_V0+'/docs';
 const API_V0_CONTRIBUTIONS = API_V0+'/contributions';
 
@@ -50,6 +52,7 @@ function makeServer() {
        app.use(express.static(path.join(__dirname, 'public')));
 
        // ReST Json API
+       app.use(API_V0_ABOUT, v0AboutRouter);
        app.use(API_V0_DOCS, v0DocsRouter);
        app.use(API_V0_CONTRIBUTIONS, v0ContributionsRouter);
 

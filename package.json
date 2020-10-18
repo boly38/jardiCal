@@ -40,9 +40,10 @@
   "scripts": {
     "start": "node --unhandled-rejections=strict bin/www",
     "test": "echo windows test&& set NODE_ENV=test&& mocha tests/*.test.js",
+    "cover": "echo windows cover&& set NODE_ENV=test&& nyc --reporter text --reporter cobertura --reporter html --lines 66 mocha tests/*.test.js",
     "help1": "echo 'Help: npm run help1'",
     "rebuild-ui": "pushd front-end&& npm run build&& popd",
-    "travis-test": "echo linux travis-test&& export NODE_ENV=test&& mocha tests/*.test.js"
+    "travis-test": "echo linux travis-test&& export NODE_ENV=test&& nyc --reporter text --reporter cobertura --reporter html --lines 66 mocha tests/*.test.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -51,14 +52,15 @@
     "ext-ip": "^0.3.9",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "jardi-lib": "^1.0.2",
+    "jardi-lib": "^1.0.4",
     "morgan": "~1.9.1",
+    "nyc": "^15.1.0",
     "test-console": "^1.1.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "eslint": "^7.11.0",
+    "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
