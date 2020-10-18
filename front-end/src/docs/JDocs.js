@@ -11,7 +11,6 @@ class JDocs extends Component {
   }
 
   componentDidMount() {
-    console.log("fetch json");
     this.searchDocs();
   }
 
