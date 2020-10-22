@@ -55,7 +55,7 @@ describe('server endpoints', () => {
         .end((err, res) => {
           _assumeSuccess(res);
           // DEBUG // console.info(JSON.stringify(res.body));
-          res.body.version.api.should.be.eql('0.0.0');
+          res.body.version.api.should.not.be.eql(null);
           res.body.dbName.should.be.eql("test-jardin");
           res.body.documents.should.be.eql(10);
           res.body.adminDbName.should.be.eql("test-jardinAdmin");
