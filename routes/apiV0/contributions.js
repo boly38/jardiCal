@@ -6,7 +6,7 @@ router.get('/count', function(req, res, next) {
 
   common.jdResponse(res, (jd) => {
     jd.contribsCount((err,nb) => {
-      common.errorResponseOrConsume(err, () => {
+      common.errorResponseOrConsume(res, err, () => {
         res.send({"count":nb});
       });
     });
@@ -24,7 +24,7 @@ router.get('/names', function(req, res, next) {
     var filter = common.reqDocsFilter(req);
     filter.champs = ["nom"];
     jd.listContribs(filter, (err,docs) => {
-      common.errorResponseOrConsume(err, () => {
+      common.errorResponseOrConsume(res, err, () => {
         res.send(docs);
       });
     });
@@ -36,7 +36,7 @@ router.delete('/', function(req, res, next) {
 
   common.jdResponse(res, (jd) => {
     jd.deleteAllContribs((err,nb) => {
-      common.errorResponseOrConsume(err, () => {
+      common.errorResponseOrConsume(res, err, () => {
         res.send({"count":nb});
       });
     });
