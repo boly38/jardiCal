@@ -12,13 +12,18 @@ router.get('/', function(req, res, next) {
        return;
     }
     var jdConfig = jd.getConfiguration();
+
     async.waterfall(
         [
             function(callback) {
                 jd.count(callback);
             },
             function(docsCount, callback) {
+              if (jdConfig.roles.includes('admin')) {
                 jd.contribsCount((err, contribsCount) => callback(err, {docsCount,contribsCount}));
+              } else {
+                callback(err, {docsCount});
+              }
             }
         ],
         function (err, counts) {
@@ -34,8 +39,10 @@ router.get('/', function(req, res, next) {
             } else {
                 aboutResult.dbName = jdConfig.db.name;
                 aboutResult.documents = counts.docsCount;
-                aboutResult.adminDbName = jdConfig.adminDb.name;
-                aboutResult.contributions = counts.contribsCount;
+                if (jdConfig.roles.includes('admin')) {
+                  aboutResult.adminDbName = jdConfig.adminDb.name;
+                  aboutResult.contributions = counts.contribsCount;
+                }
             }
             res.send(aboutResult);
         }

@@ -2,6 +2,7 @@ require('supertest');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const util = require('util')
+const async = require('async')
 
 const CommonService = require('../lib/CommonService')
 
@@ -21,10 +22,10 @@ var endpoints = [API_V0_CONTRIBUTIONS, API_V0_DOCS];
 var expectedCountResult;
 
 describe('server endpoints', () => {
-  before(function () {
+  before(function (done) {
       _setTestMode();
       server = require('../server')();
-      _cleanupData();
+      _cleanupData(done);
   });
 
   it('should post ' + API_V0_DOCS_SAMPLES, function(done) {
@@ -89,11 +90,28 @@ function _setTestMode() {
     console.info("TEST MODE uri:", CommonService.MONGO_URI, " admin:", CommonService.MONGO_ADMIN_DB);
 }
 
-async function _cleanupData() {
+function _cleanupData(cb) {
   try {
-    var jd = await util.promisify(CommonService.assumeJd)()
-    await jd.JardiDoc.deleteMany({});
-    await jd.JardiContrib.deleteMany({});
+    async.waterfall(
+        [
+            function(callback) {
+                CommonService.assumeJd(callback);
+            },
+            function(jd, callback) {
+                jd.JardiDoc.deleteMany({}, (err,data) => {callback(err, jd)});
+            },
+            function(jd, callback) {
+                jd.JardiContrib.deleteMany({}, (err,data) => {callback(err, jd)});
+            },
+        ],
+        function (err, jd) {
+            if (err) {
+                expect.fail(err);
+            } else {
+                cb();
+            }
+        }
+    );
   } catch(err) {
     expect.fail(err);
   }
