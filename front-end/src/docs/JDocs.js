@@ -1,21 +1,37 @@
 import React, { Component } from 'react'
 import { Alert } from 'react-bootstrap';
+import { Badge } from 'react-bootstrap';
 import JDocChoice from './JDocChoice';
 import ApiV0 from '../services/ApiV0'
+import {JConstants} from '../core/JConstants'
+import {initGA, Event} from '../services/Tracking';
 
 class JDocs extends Component {
   state = {
       docs: null,
       errorMessage: null,
       infoMessage: null,
+      hasNext: true
   }
+
+  constructor(props) {
+      super(props);
+      this.onNext = this.onNext.bind(this);
+  }
+
 
   componentDidMount() {
-    this.searchDocs();
+    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    this.searchDocs(null);
   }
 
-  searchDocs() {
-    var filter = {"limit":10};
+  onNext() {
+    Event(JConstants.GG_CATEGORY.ENTRIES, "list", "next")
+    this.searchDocs(this.state.docs[this.state.docs.length-1]._id);
+  }
+
+  searchDocs(bookmark) {
+    var filter = {"limit":5, "bookmark":bookmark};
     ApiV0.getDocs(filter,
          (docsResults) => {
            if (docsResults.length) {
@@ -26,7 +42,8 @@ class JDocs extends Component {
                })
            } else {
                this.setState({
-                 infoMessage: "aucun résultat"
+                 infoMessage: "aucun résultat",
+                 hasNext: false
                })
            }
          },
@@ -64,6 +81,10 @@ class JDocs extends Component {
           ) :
           ( null )
         }
+        { this.state.hasNext ?
+            (<div><Badge variant="info" size="sm mr-2 mt-2"
+                    style={{cursor: 'pointer'}}
+                    onClick={this.onNext.bind(this)}>...</Badge></div>) : (null) }
        </div>
       </div>
     );
