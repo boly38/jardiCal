@@ -3,6 +3,11 @@ import { Badge } from 'react-bootstrap';
 import { GiFireFlower, GiPear, GiCarrot, GiHighGrass } from 'react-icons/gi'; // https://react-icons.github.io/react-icons/icons?name=gi
 
 class JDocChoice extends Component {
+
+  onSelect(doc) {
+    this.props.onSelect(doc);
+  }
+
   render() {
     return (
       <div className="doc-choice" >
@@ -13,7 +18,10 @@ class JDocChoice extends Component {
 
         badge doc: https://react-bootstrap.github.io/components/badge/#badge-props
         */}
-        <Badge variant="success" size="sm mr-2 mt-2" title={this.props.doc.type}>
+        <Badge variant="success" size="sm mr-2 mt-2"
+               style={{cursor: 'pointer'}}
+               title={this.props.doc.type}
+               onClick={this.onSelect.bind(this, this.props.doc)}>
           {this.props.doc.nom}
           &#160;
           { this.props.doc.type.map( (docType, index) => {
