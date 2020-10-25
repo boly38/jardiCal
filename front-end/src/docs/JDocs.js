@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-bootstrap';
-import { Badge } from 'react-bootstrap';
+import './JDocs.css';
+import { Alert, Badge } from 'react-bootstrap';
+import JDoc from './JDoc';
 import JDocChoice from './JDocChoice';
 import ApiV0 from '../services/ApiV0'
 import {JConstants} from '../core/JConstants'
@@ -14,20 +15,24 @@ class JDocs extends Component {
       hasNext: true
   }
 
-  constructor(props) {
-      super(props);
-      this.onNext = this.onNext.bind(this);
-  }
-
-
   componentDidMount() {
     initGA(JConstants.GOOGLE_ANALYTICS_CODE);
     this.searchDocs(null);
   }
 
   onNext() {
-    Event(JConstants.GG_CATEGORY.ENTRIES, "list", "next")
+    Event(JConstants.GG_CATEGORY.ENTRIES, "list next", "list next")
     this.searchDocs(this.state.docs[this.state.docs.length-1]._id);
+  }
+
+  onSelect(doc) {
+    Event(JConstants.GG_CATEGORY.ENTRIES, "select " + doc.nom, "select " + doc.nom)
+    this.setState({doc})
+  }
+
+  onUnselect() {
+    Event(JConstants.GG_CATEGORY.ENTRIES, "list back", "list back")
+    this.setState({doc:null})
   }
 
   searchDocs(bookmark) {
@@ -38,7 +43,8 @@ class JDocs extends Component {
                this.setState({
                  docs: docsResults,
                  errorMessage: null,
-                 infoMessage: null
+                 infoMessage: null,
+                 hasNext: true
                })
            } else {
                this.setState({
@@ -56,7 +62,7 @@ class JDocs extends Component {
   render() {
     return (
       <div className="jdocs">
-       <div className="docsList">
+
         { this.state.errorMessage ?
             ( <Alert variant="warning">
                 {this.state.errorMessage}
@@ -69,23 +75,34 @@ class JDocs extends Component {
               </Alert> )
             : ( null)
         }
-
-        <h1>Entrées</h1>
-        <p>
-        Entrées liées au jardin
-        </p>
-        { this.state.docs && this.state.docs.length ?
-          ( <div>
-            { this.state.docs.map( (doc, index) => { return( <JDocChoice key={index} index={index} doc={doc}/>) }) }
-            </div>
-          ) :
-          ( null )
+        { this.state.doc ?
+          (<div> <JDoc doc={this.state.doc} onUnselect={this.onUnselect.bind(this)} /> </div> ) :
+          (
+          <div className="docsList">
+              <h1>Entrées</h1>
+              <p>
+              Entrées liées au jardin
+              </p>
+              { this.state.docs && this.state.docs.length ?
+                ( <div>
+                  { this.state.docs.map( (doc, index) => { return(
+                       <JDocChoice key={index} index={index} doc={doc} onSelect={this.onSelect.bind(this)} />)
+                  }) }
+                  </div>
+                ) :
+                ( null )
+              }
+              { this.state.hasNext ?
+                  (<div><Badge variant="info" size="sm mr-2 mt-2"
+                          style={{cursor: 'pointer'}}
+                          onClick={this.onNext.bind(this)}>...</Badge></div>) :
+                  (<div><Badge variant="info" size="sm mr-2 mt-2"
+                                            style={{cursor: 'pointer'}}
+                                            onClick={this.searchDocs.bind(this, null)}>Recharger</Badge></div>)
+               }
+          </div>
+          )
         }
-        { this.state.hasNext ?
-            (<div><Badge variant="info" size="sm mr-2 mt-2"
-                    style={{cursor: 'pointer'}}
-                    onClick={this.onNext.bind(this)}>...</Badge></div>) : (null) }
-       </div>
       </div>
     );
   }

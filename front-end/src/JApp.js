@@ -81,7 +81,7 @@ class JApp extends Component {
           <Switch>
             <Route exact path="/" component={() => <JHome />} />
             <Route exact path="/month" component={() => <JMonth />} />
-            <Route exact path="/documents" component={() => <JDocs />} />
+            <Route exact path="/docs" component={() => <JDocs />} />
         { roles.includes('owner') ?
           ( <Route exact path="/owner" component={() =>
                     <JAdmin about={this.state.about} onActionDone={this.onActionDone} />
