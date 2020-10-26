@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import './JMenu.css';
-import { Navbar, Nav} from 'react-bootstrap';
-// import { Navbar, Nav, Form, FormControl, Button} from 'react-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import {JConstants} from './JConstants'
 import {initGA, Event} from '../services/Tracking';
-
 
 class JMenu extends Component {
   constructor(props) {
@@ -21,6 +19,7 @@ class JMenu extends Component {
     Event(JConstants.GG_CATEGORY.MENU, menuEntry, "Menu clic on " + menuEntry)
   }
 
+
   render() {
     return (
       <Navbar bg="light" expand="lg">
@@ -35,12 +34,6 @@ class JMenu extends Component {
           : ( null)
         }
           </Nav>
-          {/*
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-success">Search</Button>
-          </Form>
-          */}
         </Navbar.Collapse>
       </Navbar>
 
