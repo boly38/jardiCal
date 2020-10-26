@@ -57,11 +57,11 @@ class JDoc extends Component {
             </tr>
             <tr>
               <td>Famille</td>
-              <td>{this.props.doc.familles}</td>
+              <td>{this.props.doc.familles.join(' - ')}</td>
             </tr>
             <tr>
               <td>Type</td>
-              <td>{this.props.doc.type}</td>
+              <td>{this.props.doc.type.join(' - ')}</td>
             </tr>
           </tbody>
         </Table>
