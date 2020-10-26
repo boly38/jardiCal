@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "garden data application - application sur le calendrier du jardin",
   "private": true,
   "author": "Boly38 <boly380@gmail.com>",
