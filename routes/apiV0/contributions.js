@@ -32,6 +32,36 @@ router.get('/names', function(req, res, next) {
 
 });
 
+router.post('/', function(req, res, next) {
+
+  common.jdResponse(res, (jd) => {
+    console.info("port contrib body", req.body);
+    var entryToAdd = {};
+    entryToAdd.nom = req.body.contribNom;
+    entryToAdd.nom_scientifique = req.body.contribNomScientifique;
+    jd.contribute(entryToAdd, (err,entryAdded) => {
+      common.errorResponseOrConsume(res, err, () => {
+        res.send(entryAdded);
+      });
+    });
+  });
+
+});
+
+router.get('/', function(req, res, next) {
+
+  common.jdResponse(res, (jd) => {
+    var filter = common.reqDocsFilter(req);
+    console.info("get contributions", filter);
+    jd.listContribs(filter, (err,docs) => {
+      common.errorResponseOrConsume(res, err, () => {
+        res.send(docs);
+      })
+    });
+  });
+
+});
+
 router.delete('/', function(req, res, next) {
 
   common.jdResponse(res, (jd) => {

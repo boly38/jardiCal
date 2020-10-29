@@ -7,6 +7,8 @@ import JHome from './core/JHome';
 import JMonth from './core/JMonth';
 import JDocs from './docs/JDocs';
 import JAdmin from './admin/JAdmin';
+import JContrib from './contrib/JContrib';
+import JAbout from './core/JAbout';
 import {JConstants} from './core/JConstants'
 import {PageView, initGA} from './services/Tracking';
 import ApiV0 from './services/ApiV0'
@@ -40,16 +42,9 @@ class JApp extends Component {
   }
 
   doAbout() {
-      ApiV0.about((aboutResults) => {
-             // DEBUG// console.info("aboutResults",aboutResults)
-             this.setState({
-              about: aboutResults
-             })
-           },
-           (getErrorMessage) => {
-               this.setState({errorMessage: getErrorMessage})
-           }
-       );
+      ApiV0.about()
+        .then((aboutResults) => { this.setState({ about: aboutResults }); })
+        .catch((getErrorMessage) => { this.setState({errorMessage: getErrorMessage}); });
   }
 
   onActionDone(actionMessage) {
@@ -82,12 +77,19 @@ class JApp extends Component {
             <Route exact path="/" component={() => <JHome />} />
             <Route exact path="/month" component={() => <JMonth />} />
             <Route exact path="/docs" component={() => <JDocs />} />
+        { roles.includes('admin') ?
+          ( <Route exact path="/contrib" component={() =>
+                    <JContrib about={this.state.about} />
+            } /> )
+          : ( null)
+        }
         { roles.includes('owner') ?
           ( <Route exact path="/owner" component={() =>
                     <JAdmin about={this.state.about} onActionDone={this.onActionDone} />
             } /> )
           : ( null)
         }
+            <Route exact path="/about" component={() => <JAbout about={this.state.about}/>} />
           </Switch>
         </div>
       </div>

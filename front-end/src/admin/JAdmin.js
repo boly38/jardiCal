@@ -24,42 +24,40 @@ class JAdmin extends Component {
 
   onRemoveDocuments() {
       var admin = this;
-      ApiV0.removeAllDocs((nbDeleted) => {
-             var actionDone = nbDeleted + " échantillon(s) supprimé(s)";
-             Event(JConstants.GG_CATEGORY.ADMIN, "removeAllDocs", actionDone)
-             admin.props.onActionDone(actionDone);
-           },
-           (getErrorMessage) => {
-               this.setState({errorMessage: getErrorMessage})
-           }
-       );
+      ApiV0.removeAllDocs()
+      .then((nbDeleted) => {
+        var actionDone = nbDeleted + " échantillon(s) supprimé(s)";
+        Event(JConstants.GG_CATEGORY.ADMIN, "removeAllDocs", actionDone)
+        admin.props.onActionDone(actionDone);
+      })
+      .catch((getErrorMessage) => {
+        this.setState({errorMessage: getErrorMessage})
+      });
   }
 
   onRemoveContribs() {
       var admin = this;
-      ApiV0.removeAllContribs((nbDeleted) => {
-             var actionDone = nbDeleted + " contribution(s) supprimé(s)";
-             Event(JConstants.GG_CATEGORY.ADMIN, "removeAllContribs", actionDone)
-             admin.props.onActionDone(actionDone);
-           },
-           (getErrorMessage) => {
-               this.setState({errorMessage: getErrorMessage})
-           }
-       );
+      ApiV0.removeAllContribs()
+      .then((nbDeleted) => {
+        var actionDone = nbDeleted + " contribution(s) supprimé(s)";
+        Event(JConstants.GG_CATEGORY.ADMIN, "removeAllContribs", actionDone)
+        admin.props.onActionDone(actionDone);
+      })
+      .catch((getErrorMessage) => {
+        this.setState({errorMessage: getErrorMessage})
+      });
   }
 
   onAddSample() {
       var admin = this;
-      ApiV0.samples((nbSample) => {
-             // DEBUG// console.info("samplesResult",nbSample);
-             var actionDone = nbSample + " échantillons en base";
-             Event(JConstants.GG_CATEGORY.ADMIN, "samples", actionDone)
-             admin.props.onActionDone(actionDone);
-           },
-           (getErrorMessage) => {
-               this.setState({errorMessage: getErrorMessage})
-           }
-       );
+      ApiV0.samples()
+        .then((nbSample) => {
+          // DEBUG// console.info("samplesResult",nbSample);
+          var actionDone = nbSample + " échantillons en base";
+          Event(JConstants.GG_CATEGORY.ADMIN, "samples", actionDone)
+          admin.props.onActionDone(actionDone);
+        })
+        .catch((getErrorMessage) => { this.setState({errorMessage: getErrorMessage}); } );
   }
 
   render() {

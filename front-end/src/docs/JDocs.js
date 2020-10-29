@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import './JDocs.css';
 import { Alert, Badge } from 'react-bootstrap';
-import { Form, FormControl, Button} from 'react-bootstrap';
-import { AiOutlineCloseSquare } from 'react-icons/ai';
+import JSearchEntries from '../common/JSearchEntries';
 import JDoc from './JDoc';
 import JDocChoice from './JDocChoice';
 import ApiV0 from '../services/ApiV0'
@@ -21,7 +20,7 @@ class JDocs extends Component {
       hasNext: true,
       searchString: '',
       bookmark: '',
-      searchLocked: false
+      searchLocked: false // toogle search form
   }
 
   componentDidMount() {
@@ -53,8 +52,8 @@ class JDocs extends Component {
   }
 
   _refocus() {
-    if (this.entriesSearch) {
-          this.entriesSearch.focus();
+    if (this.searchEntries) {
+          this.searchEntries.focus();
     }
   }
 
@@ -68,9 +67,9 @@ class JDocs extends Component {
       e.preventDefault();
     }
     var jd = this;
-    var evt = "search " + this.entriesSearch.value;
+    var evt = "search " + this.state.searchString;
     Event(JConstants.GG_CATEGORY.ENTRIES, evt, evt)
-    this.setState({searchString:this.entriesSearch.value,bookmark:'',searchLocked:true}, () => jd.searchDocs());
+    this.setState({searchString:this.state.searchString,bookmark:'',searchLocked:true}, () => jd.searchDocs());
   }
 
   onNext() {
@@ -94,8 +93,9 @@ class JDocs extends Component {
   }
 
   onUnlock() {
-    this.setState({searchLocked: false}, () => this.entriesSearch.focus());
+    this.setState({searchLocked: false}, () => this._refocus());
   }
+
   onUnSearch() {
     this.onReload();
   }
@@ -111,76 +111,41 @@ class JDocs extends Component {
       filter.nom = searchString;
     }
     // DEBUG // console.info("searchDocs", filter);
-    ApiV0.getDocs(filter,
-         (docsResults) => {
-           if (docsResults.length) {
-               this.setState({
-                 docs: docsResults,
-                 errorMessage: null,
-                 infoMessage: null,
-                 hasNext: true
-               }, () => this._refocus())
-           } else {
-               var newState = {hasNext: false};
-               if (bookmark == null || bookmark === '') {
-                 newState.infoMessage = "aucun résultat";
-                 newState.docs = null;
-               }
-               this.setState(newState, () => this._refocus())
-           }
-         },
-         (getErrorMessage) => {
-             this.setState({errorMessage: getErrorMessage}, () => this._refocus())
-         }
-     );
+    ApiV0.getDocs(filter)
+      .then((docsResults) => {
+        if (docsResults.length) {
+          this.setState({ docs: docsResults, errorMessage: null, infoMessage: null, hasNext: true },
+            () => this._refocus());
+        } else {
+          var newState = {hasNext: false};
+          if (bookmark == null || bookmark === '') {
+            newState.infoMessage = "aucun résultat";
+            newState.docs = null;
+          }
+          this.setState(newState, () => this._refocus())
+        }
+      })
+      .catch((getErrorMessage) => { this.setState({errorMessage: getErrorMessage}, () => this._refocus()); });
   }
 
   render() {
-    const searchString = this.state.searchString;
     return (
       <div className="jdocs">
 
-        { this.state.errorMessage ?
-            ( <Alert variant="warning">
-                {this.state.errorMessage}
-              </Alert> )
-            : ( null)
-        }
+        { this.state.errorMessage ? (<Alert variant="warning">{this.state.errorMessage}</Alert>) : (null) }
         <div className="infoBox">{this.state.infoMessage}&#160;</div>
         { this.state.doc ?
                   (<div> <JDoc doc={this.state.doc} onUnselect={this.onUnselect.bind(this)} /> </div> ) :
                   (
                   <div className="docsList">
-                      <p>
-                      Entrées liées au jardin
-                      </p>
-                      { this.state.searchLocked ?
-                      (<div className="mb-3">
-                        <Badge variant="secondary" size="sm mr-2 mt-2"
-                           onClick={this.onUnlock.bind(this)}>search : {this.state.searchString}</Badge>
-                        &#160;
-                        <AiOutlineCloseSquare
-                                    onClick={this.onUnSearch.bind(this)}
-                                    style={{cursor: 'pointer'}}
-                                    title="Annuler la recherche (raccourci: Escape)"/>
-                       </div>) :
-                      (<Form inline className="mb-3" onSubmit={this.onSearch.bind(this)}>
-                           <FormControl key="entriesSearch"
-                                        type="text"
-                                        placeholder="Recherche par nom"
-                                        value={searchString}
-                                        className="mr-sm-2"
-                                        onChange={e => this.setState({ searchString:e.target.value})}
-                                        ref={(input) => { this.entriesSearch = input; }}
-                           />
-                           <Button key="entriesSearchButton"
-                                   variant="outline-success"
-                                   onClick={this.onSearch.bind(this)}
-                                   title="Lancer la recherche (raccourci: Enter)"
-                                   >Rechercher</Button>
-                       </Form>
-                      )}
-
+                      <p>Entrées liées au jardin</p>
+                      <JSearchEntries searchLocked={this.state.searchLocked}
+                                      searchString={this.state.searchString}
+                                      unLock={this.onUnlock.bind(this)}
+                                      unSearch={this.onUnSearch.bind(this)}
+                                      onSearchStringUpdated={(newSearchString) => this.setState({ searchString:newSearchString})}
+                                      onSearch={this.onSearch.bind(this)}
+                                      ref={(input) => { this.searchEntries = input; }}/>
 
                       { this.state.docs && this.state.docs.length ?
                         ( <div>
