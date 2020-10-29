@@ -1,8 +1,11 @@
+import queryString from 'query-string';
+
 class ApiV0 {
   static debug = false;
 
-  static about(onSuccess, onFailure) {
-    fetch('/api/v0/about')
+  static about() {
+    return new Promise((resolve, reject) => {
+      fetch('/api/v0/about')
       .then(async response => {
           var aboutResponse = null;
           try {
@@ -13,120 +16,147 @@ class ApiV0 {
           } catch (jsonException) {
           }
           if (!response.ok) {
-            onFailure();
+            reject();
             return;
           }
-          onSuccess(aboutResponse);
+          resolve(aboutResponse);
       })
       .catch((authError) => {
-        if (ApiV0.debug) {
-          console.log("ERR", authError);
+          if (ApiV0.debug) { console.log("ERR", authError); }
+          reject(authError)
+        });
+    });
+  }
+
+  static getDocs(options) {
+    return new Promise((resolve, reject) => {
+      const getQueryString = queryString.stringify(options);
+      fetch(`/api/v0/docs?${getQueryString}`)
+      .then(async response => {
+        const docsResults = await response.json();
+        if (ApiV0.debug) { console.log("RESPONSE", docsResults); }
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
+          return Promise.reject(error);
         }
-        onFailure(authError)
+        resolve(docsResults);
+      })
+      .catch((getError) => {
+        if (ApiV0.debug) { console.log("ERR", getError); }
+        reject(getError);
       });
+    });
   }
 
-  static getDocs(options, onSuccess, onFailure) {
-    const queryString = ApiV0.objToQueryString(options);
-    fetch(`/api/v0/docs?${queryString}`)
-    .then(async response => {
-      const docsResults = await response.json();
-      if (ApiV0.debug) {
-        console.log("RESPONSE", docsResults);
-      }
-      // check for error response
-      if (!response.ok) {
-        // get error message from body or default to response status
-        const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
-        return Promise.reject(error);
-      }
-      onSuccess(docsResults);
-    })
-    .catch((getError) => {
-      if (ApiV0.debug) {
-        console.log("ERR", getError);
-      }
-      onFailure(getError);
-    })
+  static getContribs(options) {
+    return new Promise((resolve, reject) => {
+      const getQueryString = queryString.stringify(options);
+      fetch(`/api/v0/contributions?${getQueryString}`)
+      .then(async response => {
+        const contribsResults = await response.json();
+        if (ApiV0.debug) { console.log("RESPONSE", contribsResults); }
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (contribsResults && contribsResults.details) || (contribsResults && contribsResults.message) || response.status;
+          return Promise.reject(error);
+        }
+        resolve(contribsResults);
+      })
+      .catch((getError) => {
+        if (ApiV0.debug) { console.log("ERR", getError); }
+        reject(getError);
+      });
+    });
   }
 
-  static samples(onSuccess, onFailure) {
-    fetch('/api/v0/docs/samples', { method: 'POST' })
+  static samples() {
+    return new Promise((resolve, reject) => {
+      fetch('/api/v0/docs/samples', { method: 'POST' })
       .then(async response => {
           var samplesResponse = null;
           try {
             samplesResponse = await response.json();
-            if (ApiV0.debug) {
-              console.log("RESPONSE", samplesResponse);
-            }
+            if (ApiV0.debug) { console.log("RESPONSE", samplesResponse); }
           } catch (jsonException) {
           }
           if (!response.ok) {
-            onFailure();
+            reject();
             return;
           }
-          onSuccess(samplesResponse.count);
+          resolve(samplesResponse.count);
       })
       .catch((authError) => {
-        if (ApiV0.debug) {
-          console.log("ERR", authError);
-        }
-        onFailure(authError)
+        if (ApiV0.debug) { console.log("ERR", authError); }
+        reject(authError)
       });
+    });
   }
 
-  static removeAllDocs(onSuccess, onFailure) {
-    fetch(`/api/v0/docs`, { method: 'DELETE' })
-    .then(async response => {
-      const docsResults = await response.json();
-      if (ApiV0.debug) {
-        console.log("RESPONSE", docsResults);
-      }
-      // check for error response
-      if (!response.ok) {
-        // get error message from body or default to response status
-        const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
-        return Promise.reject(error);
-      }
-      onSuccess(docsResults.count);
-    })
-    .catch((getError) => {
-      if (ApiV0.debug) {
-        console.log("ERR", getError);
-      }
-      onFailure(getError);
-    })
+  static contribute(entryToAdd) {
+    return new Promise((resolve, reject) => {
+        fetch('/api/v0/contributions',
+          { method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(entryToAdd) })
+        .then(async response => {
+            var contribResponse = null;
+            try {
+              contribResponse = await response.json();
+              if (ApiV0.debug) { console.log("RESPONSE", contribResponse); }
+            } catch (jsonException) {
+            }
+            if (!response.ok) {
+              reject("Impossible de contribuer - "+response.status);
+              return;
+            }
+            resolve(contribResponse);
+        })
+        .catch((authError) => {
+          if (ApiV0.debug) { console.log("ERR", authError); }
+          reject(authError)
+        });
+    });
   }
 
-  static removeAllContribs(onSuccess, onFailure) {
-    fetch(`/api/v0/contributions`, { method: 'DELETE' })
-    .then(async response => {
-      const docsResults = await response.json();
-      if (ApiV0.debug) {
-        console.log("RESPONSE", docsResults);
-      }
-      // check for error response
-      if (!response.ok) {
-        // get error message from body or default to response status
-        const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
-        return Promise.reject(error);
-      }
-      onSuccess(docsResults.count);
-    })
-    .catch((getError) => {
-      if (ApiV0.debug) {
-        console.log("ERR", getError);
-      }
-      onFailure(getError);
-    })
+  static removeAllDocs() {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v0/docs`, { method: 'DELETE' })
+      .then(async response => {
+        const docsResults = await response.json();
+        if (ApiV0.debug) { console.log("RESPONSE", docsResults); }
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
+          return Promise.reject(error);
+        }
+        resolve(docsResults.count);
+      })
+      .catch((getError) => {
+        if (ApiV0.debug) { console.log("ERR", getError); }
+        reject(reject);
+      });
+    });
   }
 
-  static objToQueryString(obj) {
-    const keyValuePairs = [];
-    for (const key in obj) {
-      keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
-    }
-    return keyValuePairs.join('&');
+  static removeAllContribs() {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v0/contributions`, { method: 'DELETE' })
+      .then(async response => {
+        const docsResults = await response.json();
+        if (ApiV0.debug) { console.log("RESPONSE", docsResults); }
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (docsResults && docsResults.details) || (docsResults && docsResults.message) || response.status;
+          return Promise.reject(error);
+        }
+        resolve(docsResults.count);
+      })
+      .catch((getError) => {
+        if (ApiV0.debug) { console.log("ERR", getError); }
+        reject(getError);
+      });
+    });
   }
 
 }
