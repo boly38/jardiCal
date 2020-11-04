@@ -39,7 +39,8 @@
   },
   "scripts": {
     "start": "node --unhandled-rejections=strict bin/www",
-    "test": "echo windows test&& set NODE_ENV=test&& mocha tests/*.test.js",
+    "test": "echo windows test&& set NODE_ENV=test&& mocha --unhandled-rejections=strict tests/*.test.js",
+    "debug": "echo windows test debug mode&& set NODE_ENV=test&& set DEBUG=mocha:*&& mocha --unhandled-rejections=strict tests/*.test.js",
     "cover": "echo windows cover&& set NODE_ENV=test&& nyc --reporter text --reporter cobertura --reporter html --lines 66 mocha tests/*.test.js",
     "help1": "echo 'Help: npm run help1'",
     "rebuild-ui": "pushd front-end&& npm run build&& popd",
@@ -52,7 +53,7 @@
     "ext-ip": "^0.3.9",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "jardi-lib": "^1.0.6",
+    "jardi-lib": "^1.0.7",
     "morgan": "~1.9.1",
     "nyc": "^15.1.0",
     "test-console": "^1.1.0"
