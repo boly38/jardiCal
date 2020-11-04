@@ -20,6 +20,8 @@ const API_V0_CONTRIBUTIONS = API_V0+'/contributions';
 var server;
 var endpoints = [API_V0_CONTRIBUTIONS, API_V0_DOCS];
 var expectedCountResult;
+var contribToAdd;
+var contribToReject;
 
 describe('server endpoints', () => {
   before(function (done) {
@@ -67,6 +69,91 @@ describe('server endpoints', () => {
           done();
         });
 
+  });
+
+  it('should contribute entryToAdd with ' + API_V0_CONTRIBUTIONS, function(done) {
+      var entryToAdd = {
+        contribNom:'entryToAdd',
+        contribNomScientifique:'entryToAddTestus',
+        semi: {m: [2,3,4]},
+        plantation: {m:[5,6]}
+      };
+      chai.request(server)
+        .post(API_V0_CONTRIBUTIONS)
+        .send(JSON.stringify(entryToAdd))
+        .set('Accept', 'application/json; charset=utf-8')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
+          contribToAdd = res.body;
+          res.body.doc.nom.should.be.eql('entryToAdd');
+          res.body.doc.nom_scientifique.should.be.eql('entryToAddTestus');
+          res.body.doc.semi.m.should.be.eql([2,3,4]);
+          res.body.doc.plantation.m.should.be.eql([5,6]);
+          done();
+        });
+
+  });
+
+  it('should contribute entryToReject with ' + API_V0_CONTRIBUTIONS, function(done) {
+      var entryToReject = {
+        contribNom:'entryToReject',
+        contribNomScientifique:'entryToRejectTestus'
+      };
+
+      chai.request(server)
+        .post(API_V0_CONTRIBUTIONS)
+        .send(JSON.stringify(entryToReject))
+        .set('Accept', 'application/json; charset=utf-8')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          contribToReject = res.body;
+          // DEBUG // console.log(JSON.stringify(res.body));
+          res.body.doc.nom.should.be.eql('entryToReject');
+          res.body.doc.nom_scientifique.should.be.eql('entryToRejectTestus');
+          done();
+        });
+
+  });
+
+  it('should contribute accept with ' + API_V0_CONTRIBUTIONS, function(done) {
+      chai.request(server)
+        .post(API_V0_CONTRIBUTIONS + '/' + contribToAdd._id + '/accept')
+        .set('Accept', 'application/json; charset=utf-8')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
+          res.body.count.should.be.eql(1);
+          done();
+        });
+  });
+
+  it('should contribute reject with ' + API_V0_CONTRIBUTIONS, function(done) {
+      chai.request(server)
+        .post(API_V0_CONTRIBUTIONS + '/' + contribToReject._id + '/reject')
+        .set('Accept', 'application/json; charset=utf-8')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
+          res.body.count.should.be.eql(1);
+          done();
+        });
+  });
+
+  it('should get docs with ' + API_V0_DOCS, function(done) {
+      chai.request(server)
+        .get(API_V0_DOCS + '?limit=100')
+        .set('Accept', 'application/json; charset=utf-8')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
+          res.body.length.should.be.eql(11);
+          res.body.filter(d => d.nom_scientifique == contribToAdd.doc.nom_scientifique).length.should.be.eql(1);
+          res.body.filter(d => d.nom_scientifique == contribToReject.doc.nom_scientifique).length.should.be.eql(0);
+          done();
+        });
   });
 
   after(function () {

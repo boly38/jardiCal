@@ -7,7 +7,7 @@ import JHome from './core/JHome';
 import JMonth from './core/JMonth';
 import JDocs from './docs/JDocs';
 import JAdmin from './admin/JAdmin';
-import JContrib from './contrib/JContrib';
+import JContribuer from './contrib/JContribuer';
 import JAbout from './core/JAbout';
 import {JConstants} from './core/JConstants'
 import {PageView, initGA} from './services/Tracking';
@@ -76,10 +76,10 @@ class JApp extends Component {
           <Switch>
             <Route exact path="/" component={() => <JHome />} />
             <Route exact path="/month" component={() => <JMonth />} />
-            <Route exact path="/docs" component={() => <JDocs />} />
+            <Route exact path="/docs" component={() => <JDocs about={this.state.about}/>}/>
         { roles.includes('admin') ?
           ( <Route exact path="/contrib" component={() =>
-                    <JContrib about={this.state.about} />
+                    <JContribuer about={this.state.about} />
             } /> )
           : ( null)
         }

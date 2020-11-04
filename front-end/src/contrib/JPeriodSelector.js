@@ -13,7 +13,7 @@ class JPeriodSelector extends Component {
   }
 
   onDeactivate() {
-    this.setState({enabled:false});
+    this.setState({selected: [], enabled:false}, () => this.props.onChange(this.props.field, []) );
   }
 
   toggleOption(e) {

@@ -10,11 +10,11 @@ class JContribChoice extends Component {
   render() {
     return (
       <div className="contrib-choice" >
-        <Badge variant="success" size="sm mr-2 mt-2"
+        <Badge variant="secondary" size="sm mr-2 mt-2"
                style={{cursor: 'pointer'}}
-               title={this.props.doc.doc.type}
-               onClick={this.onSelect.bind(this, this.props.doc)}>
-          {this.props.doc.doc.nom}
+               title={this.props.contrib.doc.type}
+               onClick={this.onSelect.bind(this, this.props.contrib)}>
+          {this.props.contrib._id.substr(17)} - {this.props.contrib.doc.nom}
         </Badge>
       </div>
     );

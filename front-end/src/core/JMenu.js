@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './JMenu.css';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, NavLink, NavDropdown } from 'react-bootstrap';
 import {JConstants} from './JConstants'
 import {initGA, Event} from '../services/Tracking';
 import { GiFlowerPot } from 'react-icons/gi';
@@ -24,18 +24,33 @@ class JMenu extends Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/" onClick={this.onMenuClic.bind(this, 'logo')}><GiFlowerPot/> JardiCal</Navbar.Brand>
+        <Navbar.Brand as={NavLink}
+                      active={(document.location.pathname === '/')}
+                      href="/"
+                      onClick={this.onMenuClic.bind(this, 'logo')}><GiFlowerPot/> JardiCal</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/docs" onClick={this.onMenuClic.bind(this, 'entrées')}>Entrées</Nav.Link>
+            <Nav.Link as={NavLink}
+                      active={document.location.pathname.startsWith('/docs')}
+                      href="/docs"
+                      onClick={this.onMenuClic.bind(this, 'entrées')}
+                      >Entrées</Nav.Link>
             {/* <Nav.Link href="/month">Par mois</Nav.Link> */}
         { this.props.roles && this.props.roles.includes('admin') ?
-          ( <Nav.Link href="/contrib" onClick={this.onMenuClic.bind(this, 'contrib')}>Contribuer</Nav.Link> )
+          ( <Nav.Link as={NavLink}
+                      active={document.location.pathname.startsWith('/contrib')}
+                      href="/contrib"
+                      onClick={this.onMenuClic.bind(this, 'contrib')}
+                      >Contribuer</Nav.Link> )
           : ( null)
         }
         { this.props.roles && this.props.roles.includes('owner') ?
-          ( <Nav.Link href="/owner" onClick={this.onMenuClic.bind(this, 'admin')}>Admin</Nav.Link> )
+          ( <Nav.Link as={NavLink}
+                      active={document.location.pathname.startsWith('/owner')}
+                      href="/owner"
+                      onClick={this.onMenuClic.bind(this, 'admin')}
+                      >Admin</Nav.Link> )
           : ( null)
         }
           </Nav>
