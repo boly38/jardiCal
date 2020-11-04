@@ -2,9 +2,28 @@ import React, { Component } from 'react'
 import { Badge, Table} from 'react-bootstrap';
 import { AiOutlineCloseSquare } from 'react-icons/ai';
 import './JDoc.css';
-import JPeriod from './JPeriod';
+import JPeriod from '../common/JPeriod';
+
+const ESCAPE_KEY = 27;
 
 class JDoc extends Component {
+  componentDidMount() {
+    document.addEventListener("keydown", this._handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this._handleKeyDown);
+  }
+
+  _handleKeyDown = (event) => {
+      switch( event.keyCode ) {
+          case ESCAPE_KEY:
+              this.onUnselect();
+              break;
+          default:
+              break;
+      }
+  }
 
   onUnselect() {
     this.props.onUnselect();
@@ -20,7 +39,8 @@ class JDoc extends Component {
                   <span className="entryName">{this.props.doc.nom}</span>
                   <Badge variant="info" size="sm mr-2 mt-2"
                        style={{cursor: 'pointer'}}
-                       onClick={this.onUnselect.bind(this)}>
+                       onClick={this.onUnselect.bind(this)}
+                       title="Fermer (raccourci: Escape)">
                     Fermer <AiOutlineCloseSquare />
                   </Badge>
               </th>

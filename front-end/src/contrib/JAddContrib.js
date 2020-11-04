@@ -44,8 +44,16 @@ class JAddContrib extends Component {
       }
   }
 
+  _isNotEmpty(myVar) {
+    return Array.isArray(myVar)&&myVar.length>0;
+  }
+
   handleAddSubmit(entryToAdd) {
     console.info("handleAddSubmit ", entryToAdd)
+    entryToAdd.semi = (this._isNotEmpty(entryToAdd.semi)) ? {m:  entryToAdd.semi } : undefined;
+    entryToAdd.plantation = (this._isNotEmpty(entryToAdd.plantation)) ? {m:  entryToAdd.plantation } : undefined;
+    entryToAdd.floraison = (this._isNotEmpty(entryToAdd.floraison)) ? {m:  entryToAdd.floraison } : undefined;
+    entryToAdd.recolte = (this._isNotEmpty(entryToAdd.recolte)) ? {m:  entryToAdd.recolte } : undefined;
     ApiV0.contribute(entryToAdd)
       .then((addResult) => {
            console.info("addResult", addResult)
@@ -81,7 +89,7 @@ class JAddContrib extends Component {
       <h1>Ajout d&apos;une entrée</h1>
         { this.state.errorMessage ?
             ( <Alert variant="warning">
-                {this.state.errorMessage}
+                {JSON.stringify(this.state.errorMessage)}
               </Alert> )
             : ( null)
         }

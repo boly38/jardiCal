@@ -16,6 +16,16 @@ ul.jmenu li a {
   display: inline-block;
 }
 
-.active {
-  color: green;
+nav.navbar {
+  padding: 0px;
+}
+
+.nav-link {
+  padding: .5rem 1rem;
+}
+.nav-link.active {
+  color: orange;
+  background-color: lightyellow;
+  font-weight: bold;
+  padding: .5rem 1rem;
 }

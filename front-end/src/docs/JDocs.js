@@ -24,6 +24,9 @@ class JDocs extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.about) {
+      return;
+    }
     // DEBUG // console.info('componentDidMount')
     initGA(JConstants.GOOGLE_ANALYTICS_CODE);
     this._refocus();
@@ -32,6 +35,9 @@ class JDocs extends Component {
   }
 
   componentWillUnmount() {
+    if (!this.props.about) {
+      return;
+    }
     document.removeEventListener("keydown", this._handleKeyDown);
   }
 
@@ -129,6 +135,12 @@ class JDocs extends Component {
   }
 
   render() {
+    if (this.state.errorMessage) {
+      console.log(this.state.errorMessage);
+    }
+    if (!this.props.about) {
+      return (null);
+    }
     return (
       <div className="jdocs">
 
