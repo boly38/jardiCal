@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 const util = require('util')
 const async = require('async')
 
-const CommonService = require('../lib/CommonService')
+const common = require('../lib/CommonService')
 
 chai.should();
 chai.use(chaiHttp);
@@ -25,7 +25,9 @@ describe('server endpoints', () => {
   before(function (done) {
       _setTestMode();
       server = require('../server')();
-      _cleanupData(done);
+      _cleanupData()
+      .catch(_expectNoError)
+      .then(done());
   });
 
   it('should post ' + API_V0_DOCS_SAMPLES, function(done) {
@@ -34,8 +36,8 @@ describe('server endpoints', () => {
       .post(API_V0_DOCS_SAMPLES)
       .set('Accept', 'application/json; charset=utf-8')
       .end((err, res) => {
-        _assumeSuccess(res);
-        // DEBUG // console.info(JSON.stringify(res.body));
+        _assumeSuccess(err, res);
+        // DEBUG // console.log(JSON.stringify(res.body));
         res.body.count.should.be.eql(10);
         expectedCountResult = res.body.count;
         done();
@@ -54,8 +56,8 @@ describe('server endpoints', () => {
         .get(API_V0_ABOUT)
         .set('Accept', 'application/json; charset=utf-8')
         .end((err, res) => {
-          _assumeSuccess(res);
-          // DEBUG // console.info(JSON.stringify(res.body));
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
           res.body.version.api.should.not.be.eql(null);
           res.body.dbName.should.be.eql("test-jardin");
           res.body.documents.should.be.eql(10);
@@ -67,54 +69,46 @@ describe('server endpoints', () => {
 
   });
 
-  after(function (done) {
+  after(function () {
+    try {
       server.quit();
-      done();
+    } catch (exception) {
+      expect.fail(exception);
+    }
   });
 
 })
 
 //~ private
 
-function _assumeSuccess(res) {
+function _expectNoError(err) {
+  expect.fail(err);
+}
+
+function _assumeSuccess(err, res) {
+  if (err) {
+    expect.fail(err);
+  }
   if (res.status && (res.status < 200 || res.status > 299)) {
-    console.info("res:",res.body);
+    console.log("res:",res.body);
   }
   res.status.should.be.within(200, 299, 'response status 2xx success expected');
 }
 
 function _setTestMode() {
-    CommonService.MONGO_URI = process.env.JARDI_TEST_MONGO_URI;
-    CommonService.MONGO_ADMIN_DB = process.env.JARDI_TEST_ADMIN_MONGO_DB_NAME;
-    CommonService.JD = null;
-    console.info("TEST MODE uri:", CommonService.MONGO_URI, " admin:", CommonService.MONGO_ADMIN_DB);
+    common.MONGO_URI = process.env.JARDI_TEST_MONGO_URI;
+    common.MONGO_ADMIN_DB = process.env.JARDI_TEST_ADMIN_MONGO_DB_NAME;
+    common.JD = null;
+    console.log("TEST MODE uri:", common.MONGO_URI, " admin:", common.MONGO_ADMIN_DB);
 }
 
-function _cleanupData(cb) {
-  try {
-    async.waterfall(
-        [
-            function(callback) {
-                CommonService.assumeJd(callback);
-            },
-            function(jd, callback) {
-                jd.JardiDoc.deleteMany({}, (err,data) => {callback(err, jd)});
-            },
-            function(jd, callback) {
-                jd.JardiContrib.deleteMany({}, (err,data) => {callback(err, jd)});
-            },
-        ],
-        function (err, jd) {
-            if (err) {
-                expect.fail(err);
-            } else {
-                cb();
-            }
-        }
-    );
-  } catch(err) {
-    expect.fail(err);
-  }
+function _cleanupData() {
+  return new Promise(async function(resolve, reject) {
+    var jd = await common.assumeJd().catch(reject);
+    await jd.JardiDoc.deleteMany({}).catch(reject);
+    await jd.JardiContrib.deleteMany({}).catch(reject);
+    resolve();
+  });
 }
 
 function _testCountEndpoint(endpoint, expectedCountResult = null) {
@@ -125,10 +119,10 @@ function _testCountEndpoint(endpoint, expectedCountResult = null) {
         .get(countEndpoint)
         .set('Accept', 'application/json; charset=utf-8')
         .end((err, res) => {
-          _assumeSuccess(res);
+          _assumeSuccess(err, res);
           res.body.should.have.property('count');
           var docCount = res.body.count;
-          // DEBUG // console.info(' * ', countEndpoint, docCount);
+          // DEBUG // console.log(' * ', countEndpoint, docCount);
           if (expectedCountResult !== null) {
             res.body.count.should.be.eql(expectedCountResult);
           }
@@ -146,15 +140,16 @@ function _testNamesEndpoint(endpoint, expectedCountResult = null) {
         .get(namesEndpoint)
         .set('Accept', 'application/json; charset=utf-8')
         .end((err, res) => {
-          _assumeSuccess(res);
+          _assumeSuccess(err, res);
           res.body.should.be.a('array');
           if (expectedCountResult !== null) {
             res.body.length.should.be.eql(expectedCountResult);
           }
-          // DEBUG // console.info(" * docs names: ", res.body.map((d)=>d.nom).join(' - '));
+          // DEBUG // console.log(" * docs names: ", res.body.map((d)=>d.nom).join(' - '));
           done();
         });
 
   });
+
 }
 

@@ -4,72 +4,57 @@ const common = require('./../../lib/CommonService');
 
 router.get('/count', function(req, res, next) {
 
-  common.jdResponse(res, (jd) => {
-    jd.contribsCount((err,nb) => {
-      common.errorResponseOrConsume(res, err, () => {
-        res.send({"count":nb});
-      });
-    });
+  common.jdResponse(res, async function(jd) {
+    await jd.contribsCount()
+    .catch((err) => common.respondError(res, err))
+    .then((nb) => res.send({"count":nb}));
   });
 
 });
 
 router.get('/names', function(req, res, next) {
-  var limit = common.isNormalInteger(req.params['limit']) ? common.intValue(req.params['limit']) : null;
-  var champs = ["nom"];
-  var bookmark = req.params['bookmark'] ? req.params['bookmark'] : null;
-  var filter = {"champs":champs,"limit":limit,"bookmark":bookmark};
 
-  common.jdResponse(res, (jd) => {
-    var filter = common.reqDocsFilter(req);
-    filter.champs = ["nom"];
-    jd.listContribs(filter, (err,docs) => {
-      common.errorResponseOrConsume(res, err, () => {
-        res.send(docs);
-      });
-    });
-  });
-
-});
-
-router.post('/', function(req, res, next) {
-
-  common.jdResponse(res, (jd) => {
-    console.info("port contrib body", req.body);
-    var entryToAdd = {};
-    entryToAdd.nom = req.body.contribNom;
-    entryToAdd.nom_scientifique = req.body.contribNomScientifique;
-    jd.contribute(entryToAdd, (err,entryAdded) => {
-      common.errorResponseOrConsume(res, err, () => {
-        res.send(entryAdded);
-      });
-    });
+  common.jdResponse(res, async function(jd) {
+    await jd.listContribs(common.reqDocsFilter(req))
+    .catch((err) => common.respondError(res, err))
+    .then((docs) => res.send(docs
+                        .filter(c => (c.doc.nom))
+                        .map(c => {return {_id:c._id,nom:c.doc.nom};})
+                    ));
   });
 
 });
 
 router.get('/', function(req, res, next) {
 
-  common.jdResponse(res, (jd) => {
-    var filter = common.reqDocsFilter(req);
-    console.info("get contributions", filter);
-    jd.listContribs(filter, (err,docs) => {
-      common.errorResponseOrConsume(res, err, () => {
-        res.send(docs);
-      })
-    });
+  common.jdResponse(res, async function(jd) {
+    await jd.listContribs(common.reqDocsFilter(req))
+    .catch((err) => common.respondError(res, err))
+    .then((docs) => res.send(docs));
+  });
+
+});
+
+router.post('/', function(req, res, next) {
+
+  common.jdResponse(res, async function(jd) {
+    console.info("port contrib body", req.body);
+    var entryToAdd = {};
+    entryToAdd.nom = req.body.contribNom;
+    entryToAdd.nom_scientifique = req.body.contribNomScientifique;
+    await jd.contribute(entryToAdd)
+    .catch((err) => common.respondError(res, err))
+    .then((entryAdded) => res.send(entryAdded));
   });
 
 });
 
 router.delete('/', function(req, res, next) {
 
-  common.jdResponse(res, (jd) => {
-    jd.deleteAllContribs((err,nb) => {
-      common.errorResponseOrConsume(res, err, () => {
-        res.send({"count":nb});
-      });
-    });
+  common.jdResponse(res, async function(jd) {
+    await jd.deleteAllContribs()
+    .catch((err) => common.respondError(res, err))
+    .then((nb) => res.send({"count":nb}));
   });
 
 });

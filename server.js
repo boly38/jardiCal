@@ -81,13 +81,8 @@ function makeServer() {
         next();
        });
 
-       extIP.get().then(ip => {
-           console.log("public IP: ", ip);
-       })
-       .catch(err => {
-           console.error("public IP err: ", err);
-       });
-
+       // var publicIp = await extIP.get().catch(err => { console.error("public IP err: ", err); });
+       // console.log("public IP: ", publicIp);
 
        var server = app.listen(port, function () {
            var port = server.address().port;
