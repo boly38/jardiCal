@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './JDocs.css';
-import { Alert, Badge } from 'react-bootstrap';
+import { Alert, Badge, Button } from 'react-bootstrap';
 import JSearchEntries from '../common/JSearchEntries';
 import JDoc from './JDoc';
 import JDocChoice from './JDocChoice';
@@ -43,17 +43,10 @@ class JDocs extends Component {
 
   _handleKeyDown = (event) => {
       switch( event.keyCode ) {
-          case ESCAPE_KEY:
-              this.onUnSearch();
-              break;
-          case RIGHT_ARROW:
-              this.onNext();
-              break;
-          case UP_ARROW:
-              this.onReload();
-              break;
-          default:
-              break;
+          case ESCAPE_KEY: this.onUnSearch(); break;
+          case RIGHT_ARROW: this.onNext(); break;
+          case UP_ARROW: this.onReload(); break;
+          default: break;
       }
   }
 
@@ -109,7 +102,7 @@ class JDocs extends Component {
   searchDocs() {
     var bookmark = this.state.bookmark;
     var searchString = this.state.searchString;
-    var filter = {"limit":5, };
+    var filter = {"limit":10, };
     if (bookmark && bookmark !== '') {
       filter.bookmark = bookmark;
     }
@@ -147,18 +140,28 @@ class JDocs extends Component {
         { this.state.errorMessage ? (<Alert variant="warning">{this.state.errorMessage}</Alert>) : (null) }
         <div className="infoBox">{this.state.infoMessage}&#160;</div>
         { this.state.doc ?
-                  (<div> <JDoc doc={this.state.doc} onUnselect={this.onUnselect.bind(this)} /> </div> ) :
+                  (<div> <JDoc doc={this.state.doc} onUnselect={this.onUnselect.bind(this)} roles={this.props.about.roles} /> </div> ) :
                   (
                   <div className="docsList">
                       <p>Entrées liées au jardin</p>
-                      <JSearchEntries searchLocked={this.state.searchLocked}
+                      <table border='0' cellPadding='5px'><tbody><tr>
+                      { this.state.docs ? (
+                       <td valign='top'>
+                        <JSearchEntries searchLocked={this.state.searchLocked}
                                       searchString={this.state.searchString}
                                       unLock={this.onUnlock.bind(this)}
                                       unSearch={this.onUnSearch.bind(this)}
                                       onSearchStringUpdated={(newSearchString) => this.setState({ searchString:newSearchString})}
                                       onSearch={this.onSearch.bind(this)}
                                       ref={(input) => { this.searchEntries = input; }}/>
-
+                       </td>
+                      ) : (null)}
+                      <td valign='top'>
+                         <Button variant="secondary" size="sm mr-2 ml-2"
+                                                     onClick={this.onReload.bind(this)}
+                                                     title="Recharger la liste des entrées (raccourci: <Flèche du haut>)"
+                                             >Recharger</Button>
+                      </td></tr></tbody></table>
                       { this.state.docs && this.state.docs.length ?
                         ( <div>
                           { this.state.docs.map( (doc, index) => { return(
@@ -174,11 +177,7 @@ class JDocs extends Component {
                                   onClick={this.onNext.bind(this)}
                                   title="Suivant (raccourci: <Flèche droite>)"
                                   >...</Badge></div>) :
-                          (<div><Badge variant="info" size="sm mr-2 mt-2"
-                                  style={{cursor: 'pointer'}}
-                                  onClick={this.onReload.bind(this)}
-                                  title="Raccourci (raccourci: <Flèche du haut>)"
-                                  >Recharger</Badge></div>)
+                          (null)
                        }
                   </div>
                   )

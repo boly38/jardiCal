@@ -15,6 +15,7 @@ class JAbout extends Component {
 
   render() {
     var apiVersion = this.props.about ? this.props.about.version.api : "N/A";
+    var frontEndVersion = this.props.about ? this.props.about.version['front-end'] : "N/A";
     var jlVersion = this.props.about ? this.props.about.version['jardi-lib'] : "N/A";
     return (
       <div className="jabout">
@@ -45,7 +46,7 @@ class JAbout extends Component {
           <tbody>
             <tr>
               <td><a href="https://github.com/boly38/jardiCal" target="_dep">JardiCal</a> version</td>
-              <td>{apiVersion}</td>
+              <td>{apiVersion} (front-end: {frontEndVersion})</td>
             </tr>
             <tr>
               <td><a href="https://github.com/boly38/jardiLib" target="_dep">JardiLib</a> version</td>

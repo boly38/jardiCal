@@ -4,8 +4,8 @@ import { AiOutlineCloseSquare, AiOutlineCheck } from 'react-icons/ai';
 
 class JPeriodSelector extends Component {
   state = {
-      enabled: false,
-      selected: []
+      enabled: this.props.preset && this.props.preset.length > 0,
+      selected: this.props.preset ? this.props.preset : []
   }
 
   onActivate() {
@@ -34,7 +34,7 @@ class JPeriodSelector extends Component {
   }
 
   isSelected(month) {
-    return this.state.selected && this.state.selected.includes(month)
+    return this.state.selected && this.state.selected.includes(month);
   }
 
   getVariantStyle(key) {

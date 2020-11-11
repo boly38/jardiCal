@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const async = require('async')
 const pjson = require('../../package.json');
+const frontEndPjson = require('../../front-end/package.json');
 const common = require('./../../lib/CommonService');
 
 router.get('/', function(req, res, next) {
@@ -10,6 +11,7 @@ router.get('/', function(req, res, next) {
     var jdConfig = jd.getConfiguration();
     var aboutResult = {
         "version":{
+          "front-end": frontEndPjson.version,
           "api": pjson.version,
           "jardi-lib": jdConfig.version
         },

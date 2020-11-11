@@ -76,6 +76,11 @@ class JAddContrib extends Component {
     console.info("handlePeriodChange", name, value);
   }
 
+  presetFor(periode) {
+    return this.props.presetContrib && this.props.presetContrib[periode] ?
+           this.props.presetContrib[periode].m.map(v => ''+v ) : [];
+  }
+
   render() {
 
     const addContribSchema = Yup.object({
@@ -83,11 +88,13 @@ class JAddContrib extends Component {
       contribNomScientifique: Yup.string().required()
     });
 
-
     return (
 <div className="add-contrib" >
 
-      <h1>Ajout d&apos;une entrée</h1>
+      { this.props.presetContrib ?
+        (<h1>Adapter {this.props.presetContrib.nom} </h1>) :
+        (<h1>Ajout d&apos;une entrée</h1>)
+      }
         { this.state.errorMessage ?
             ( <Alert variant="warning">
                 {JSON.stringify(this.state.errorMessage)}
@@ -102,8 +109,14 @@ class JAddContrib extends Component {
         <Formik validationSchema={addContribSchema}
                 onSubmit={this.handleAddSubmit.bind(this)}
                 initialValues={{
-                  contribNom: 'MaFleur',
-                  contribNomScientifique: 'MaFleurLatine'
+                  contribNom: this.props.presetContrib ? this.props.presetContrib.nom : '',
+                  contribNomScientifique: this.props.presetContrib ? this.props.presetContrib.nom_scientifique : '',
+                  type: this.props.presetContrib ? this.props.presetContrib.type : [],
+                  familles: this.props.presetContrib ? this.props.presetContrib.familles : [],
+                  semi: this.presetFor('semi'),
+                  plantation: this.presetFor('plantation'),
+                  floraison: this.presetFor('floraison'),
+                  recolte: this.presetFor('recolte')
                 }}
         >
          {({
@@ -158,6 +171,7 @@ class JAddContrib extends Component {
                                  max="3"
                                  onChange={setFieldValue}
                                  docTypes={this.props.docTypes}
+                                 preset={ this.props.presetContrib ? this.props.presetContrib.type : [] }
                                  />
               </Form.Group>
               <Form.Group controlId="addContrib.Families">
@@ -167,19 +181,28 @@ class JAddContrib extends Component {
                                  max="5"
                                  onChange={setFieldValue}
                                  docTypes={this.props.docFamilies}
+                                 preset={ this.props.presetContrib ? this.props.presetContrib.familles : [] }
                                  />
               </Form.Group>
               <Form.Group controlId="addContrib.Semi">
-                <JPeriodSelector field="semi" name="semi" onChange={setFieldValue}/>
+                <JPeriodSelector field="semi" name="semi"
+                                 onChange={setFieldValue}
+                                 preset={ this.presetFor('semi') } />
               </Form.Group>
               <Form.Group controlId="addContrib.Plantation">
-                <JPeriodSelector field="plantation" name="plantation" onChange={setFieldValue}/>
+                <JPeriodSelector field="plantation" name="plantation"
+                                 onChange={setFieldValue}
+                                 preset={ this.presetFor('plantation') } />
               </Form.Group>
               <Form.Group controlId="addContrib.Floraison">
-                <JPeriodSelector field="floraison" name="floraison" onChange={setFieldValue}/>
+                <JPeriodSelector field="floraison" name="floraison"
+                                 onChange={setFieldValue}
+                                 preset={ this.presetFor('floraison') } />
               </Form.Group>
               <Form.Group controlId="addContrib.Récolte">
-                <JPeriodSelector field="recolte" name="récolte" onChange={setFieldValue}/>
+                <JPeriodSelector field="recolte" name="récolte"
+                                 onChange={setFieldValue}
+                                 preset={ this.presetFor('recolte') }/>
               </Form.Group>
 
               <Button type="submit" variant="primary" size="sm" className="mr-2"
@@ -191,7 +214,6 @@ class JAddContrib extends Component {
           )}
         </Formik>
       </div>
-  {/* TODO: Famille / Type */}
 </div>
     );
   }
