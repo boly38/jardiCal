@@ -63,6 +63,8 @@ describe('server endpoints', () => {
           _assumeSuccess(err, res);
           // DEBUG // console.log(JSON.stringify(res.body));
           res.body.version.api.should.not.be.eql(null);
+          res.body.version['front-end'].should.not.be.eql(null);
+          res.body.version['jardi-lib'].should.not.be.eql(null);
           res.body.dbName.should.be.eql("test-jardin");
           res.body.documents.should.be.eql(10);
           res.body.adminDbName.should.be.eql("test-jardinAdmin");

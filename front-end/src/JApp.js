@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Router, Switch, Route, } from "react-router-dom";
 import './JApp.css';
 import { Alert } from 'react-bootstrap';
 import JBetaCorner from './core/JBetaCorner';
@@ -9,16 +10,10 @@ import JDocs from './docs/JDocs';
 import JAdmin from './admin/JAdmin';
 import JContribuer from './contrib/JContribuer';
 import JAbout from './core/JAbout';
+import History from './core/History';
 import {JConstants} from './core/JConstants'
 import {PageView, initGA} from './services/Tracking';
 import ApiV0 from './services/ApiV0'
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class JApp extends Component {
@@ -58,7 +53,7 @@ class JApp extends Component {
       roles = this.state.about.roles;
     }
     return (
-     <Router>
+     <Router history={History}>
       <JBetaCorner/>
       { this.state.about ?
          ( <JBetaCorner version={this.state.about.version.api} /> )

@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
-import { Badge, Table} from 'react-bootstrap';
-import { AiOutlineCloseSquare } from 'react-icons/ai';
+import { Table, Button} from 'react-bootstrap';
+import { AiOutlineCloseSquare, AiOutlineForm } from 'react-icons/ai';
 import './JDoc.css';
 import JPeriod from '../common/JPeriod';
 
 const ESCAPE_KEY = 27;
+const DOWN_ARROW = 40;
 
 class JDoc extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {'editLink': '/contrib?id='+this.props.doc._id};
+  }
+
   componentDidMount() {
     document.addEventListener("keydown", this._handleKeyDown);
   }
@@ -17,11 +23,9 @@ class JDoc extends Component {
 
   _handleKeyDown = (event) => {
       switch( event.keyCode ) {
-          case ESCAPE_KEY:
-              this.onUnselect();
-              break;
-          default:
-              break;
+          case ESCAPE_KEY: this.onUnselect(); break;
+          case DOWN_ARROW: this.onEdit(); break;
+          default: break;
       }
   }
 
@@ -29,23 +33,33 @@ class JDoc extends Component {
     this.props.onUnselect();
   }
 
+  onEdit() {
+    document.location = this.state.editLink;
+  }
+
   render() {
     return (
       <div className="doc-selected" >
+        <table border='0' cellPadding='5px'><tbody><tr>
+         <td valign='top'>
+          <span className="entryName">{this.props.doc.nom}</span>
+         </td>
+         { this.props.roles && this.props.roles.includes('admin') ? (
+          <td>
+           <Button variant="secondary" size="sm mr-2 mt-2" href={this.state.editLink}
+                   onClick={this.onEdit.bind(this)}
+                   title="Modifier (raccourci: <Flèche du bas>)"
+              >Modifier <AiOutlineForm /></Button>
+          </td>
+         ) : (null) }
+         <td>
+          <Button variant="secondary" size="sm mr-2 mt-2"
+                                     onClick={this.onUnselect.bind(this)}
+                                     title="Fermer (raccourci: Escape)"
+                             >Fermer <AiOutlineCloseSquare /></Button>
+         </td>
+        </tr></tbody></table>
         <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th colSpan="2">
-                  <span className="entryName">{this.props.doc.nom}</span>
-                  <Badge variant="info" size="sm mr-2 mt-2"
-                       style={{cursor: 'pointer'}}
-                       onClick={this.onUnselect.bind(this)}
-                       title="Fermer (raccourci: Escape)">
-                    Fermer <AiOutlineCloseSquare />
-                  </Badge>
-              </th>
-            </tr>
-          </thead>
           <tbody>
             { this.props.doc.semi && this.props.doc.semi.m ? (
             <tr>

@@ -4,9 +4,9 @@ import { Alert } from 'react-bootstrap';
 
 class JMultiCreatable extends Component {
   state = {
-      selected: [],
+      selected: this.props.preset ? this.props.preset : [],
       errorMessage: '',
-      selectedOptions : []
+      selectedOptions : this.props.preset ? this.props.preset.map( v => { return {'label':v, 'value':v }}) : []
   }
 
   handleChange = (newValue: any, actionMeta: any) => {
