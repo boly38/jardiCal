@@ -4,6 +4,7 @@ import { AiOutlineCloseSquare, AiOutlineCheck } from 'react-icons/ai';
 import {initGA, Event} from '../services/Tracking';
 import ApiV0 from '../services/ApiV0'
 import JPeriodSelector from './JPeriodSelector';
+import JMultiCreatable from './JMultiCreatable';
 import { JConstants } from '../core/JConstants'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -13,7 +14,7 @@ const ENTER_KEY = 13;
 
 class JAddContrib extends Component {
   state = {
-      errorMessage: null
+      errorMessage: null,
   }
 
   componentDidMount() {
@@ -150,6 +151,24 @@ class JAddContrib extends Component {
                 <Form.Control.Feedback>Valide</Form.Control.Feedback>
                 <Form.Control.Feedback type="invalid">Le nom scientifique est requis</Form.Control.Feedback>
               </Form.Group>
+              <Form.Group controlId="addContrib.Types">
+                <Form.Label>Type(s)</Form.Label>
+                <JMultiCreatable field="type"
+                                 name="type"
+                                 max="3"
+                                 onChange={setFieldValue}
+                                 docTypes={this.props.docTypes}
+                                 />
+              </Form.Group>
+              <Form.Group controlId="addContrib.Families">
+                <Form.Label>Famille(s)</Form.Label>
+                <JMultiCreatable field="familles"
+                                 name="familles"
+                                 max="5"
+                                 onChange={setFieldValue}
+                                 docTypes={this.props.docFamilies}
+                                 />
+              </Form.Group>
               <Form.Group controlId="addContrib.Semi">
                 <JPeriodSelector field="semi" name="semi" onChange={setFieldValue}/>
               </Form.Group>
@@ -162,6 +181,7 @@ class JAddContrib extends Component {
               <Form.Group controlId="addContrib.Récolte">
                 <JPeriodSelector field="recolte" name="récolte" onChange={setFieldValue}/>
               </Form.Group>
+
               <Button type="submit" variant="primary" size="sm" className="mr-2"
                       >Ajouter <AiOutlineCheck /></Button>
               <Button variant="secondary" size="sm" className="mr-2"

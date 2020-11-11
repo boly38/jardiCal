@@ -10,11 +10,15 @@ const indexRouter = require('./routes/index');
 const v0AboutRouter = require('./routes/apiV0/about');
 const v0DocsRouter = require('./routes/apiV0/docs');
 const v0ContributionsRouter = require('./routes/apiV0/contributions');
+const v0TypesRouter = require('./routes/apiV0/types');
+const v0FamiliesRouter = require('./routes/apiV0/families');
 
 const API_V0 = '/api/v0';
 const API_V0_ABOUT = API_V0+'/about';
 const API_V0_DOCS = API_V0+'/docs';
 const API_V0_CONTRIBUTIONS = API_V0+'/contributions';
+const API_V0_TYPES = API_V0+'/types';
+const API_V0_FAMILIES = API_V0+'/families';
 
 /**
  * Normalize a port into a number, string, or false.
@@ -56,6 +60,8 @@ function makeServer() {
        app.use(API_V0_ABOUT, v0AboutRouter);
        app.use(API_V0_DOCS, v0DocsRouter);
        app.use(API_V0_CONTRIBUTIONS, v0ContributionsRouter);
+       app.use(API_V0_TYPES, v0TypesRouter);
+       app.use(API_V0_FAMILIES, v0FamiliesRouter);
 
        // React Application
        app.use(express.static('ui'));

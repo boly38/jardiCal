@@ -22,7 +22,9 @@ class JContribuer extends Component {
       hasNext: true,
       searchString: '',
       bookmark: '',
-      searchLocked: false // toogle search form
+      searchLocked: false, // toogle search form
+      docTypes: [],
+      docFamilies: []
   }
 
   componentDidMount() {
@@ -134,6 +136,24 @@ class JContribuer extends Component {
         }
       })
       .catch((getErrorMessage) => { this.setState({errorMessage: getErrorMessage}, () => this._refocus()); });
+      this._refreshTypes();
+      this._refreshFamilies();
+  }
+
+  _refreshTypes() {
+      ApiV0.getTypes()
+        .then((typesResult) => {
+          this.setState({ docTypes: typesResult });
+        })
+        .catch((getErrorMessage) => console.info("getTypes", getErrorMessage));
+  }
+
+  _refreshFamilies() {
+      ApiV0.getFamilies()
+        .then((familiesResult) => {
+          this.setState({ docFamilies: familiesResult });
+        })
+        .catch((getErrorMessage) => console.info("getFamilies", getErrorMessage));
   }
 
   onSelect(contrib) {
@@ -178,14 +198,18 @@ class JContribuer extends Component {
         { this.state.infoMessage ?(<Alert variant="info">{this.state.infoMessage}</Alert>) : (null) }
         <div className="contribContent">
         { this.state.add === true
-           ?(<JAddContrib onCancel={this.onCancelAdd.bind(this)} onAdded={this.onAdded.bind(this)} />)
+           ?(<JAddContrib onCancel={this.onCancelAdd.bind(this)}
+                          onAdded={this.onAdded.bind(this)}
+                          docTypes={this.state.docTypes}
+                          docFamilies={this.state.docFamilies}
+                   />)
            :
           this.state.contrib
-           ?(<div><JContrib contrib={this.state.contrib}
-                            onUnselect={this.onUnselect.bind(this)}
-                            onAccept={this.onAccept.bind(this)}
-                            onReject={this.onReject.bind(this)}
-                   /> </div> )
+           ?(<JContrib contrib={this.state.contrib}
+                       onUnselect={this.onUnselect.bind(this)}
+                       onAccept={this.onAccept.bind(this)}
+                       onReject={this.onReject.bind(this)}
+                   /> )
            :(<div className="contribShow">
                 <p>Contributions</p>
                 <JSearchEntries searchLocked={this.state.searchLocked}
