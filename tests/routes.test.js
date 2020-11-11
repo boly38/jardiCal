@@ -12,10 +12,12 @@ const assert = require('assert').strict;
 const expect = require('chai').expect
 
 const API_V0 = '/api/v0';
-const API_V0_ABOUT = API_V0+'/about';
-const API_V0_DOCS = API_V0+'/docs';
-const API_V0_DOCS_SAMPLES = API_V0_DOCS+'/samples';
-const API_V0_CONTRIBUTIONS = API_V0+'/contributions';
+const API_V0_ABOUT = API_V0 + '/about';
+const API_V0_DOCS  = API_V0 + '/docs';
+const API_V0_DOCS_SAMPLES = API_V0_DOCS + '/samples';
+const API_V0_CONTRIBUTIONS = API_V0 + '/contributions';
+const API_V0_TYPES  = API_V0 + '/types';
+const API_V0_FAMILIES  = API_V0 + '/families';
 
 var server;
 var endpoints = [API_V0_CONTRIBUTIONS, API_V0_DOCS];
@@ -76,7 +78,9 @@ describe('server endpoints', () => {
         contribNom:'entryToAdd',
         contribNomScientifique:'entryToAddTestus',
         semi: {m: [2,3,4]},
-        plantation: {m:[5,6]}
+        plantation: {m:[5,6]},
+        type: ['fleur annuelle', 'vivace','nouveauType'],
+        familles: ['Renonculacées','Solanacées','nouvelleFamille']
       };
       chai.request(server)
         .post(API_V0_CONTRIBUTIONS)
@@ -91,6 +95,8 @@ describe('server endpoints', () => {
           res.body.doc.nom_scientifique.should.be.eql('entryToAddTestus');
           res.body.doc.semi.m.should.be.eql([2,3,4]);
           res.body.doc.plantation.m.should.be.eql([5,6]);
+          res.body.doc.type.should.be.eql(['fleur annuelle', 'vivace','nouveauType']);
+          res.body.doc.familles.should.be.eql(['Renonculacées','Solanacées','nouvelleFamille']);
           done();
         });
 
@@ -155,6 +161,30 @@ describe('server endpoints', () => {
           done();
         });
   });
+
+    it("should get types with " + API_V0_TYPES, function(done) {
+      chai.request(server)
+        .get(API_V0_TYPES)
+        .set('Accept', 'application/json; charset=utf-8')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG //vconsole.log(JSON.stringify(res.body));
+          res.body.length.should.be.eql(9);
+          done();
+        });
+    });
+
+    it("should list familieswith " + API_V0_FAMILIES, function(done) {
+      chai.request(server)
+        .get(API_V0_FAMILIES)
+        .set('Accept', 'application/json; charset=utf-8')
+        .end((err, res) => {
+          _assumeSuccess(err, res);
+          // DEBUG // console.log(JSON.stringify(res.body));
+          res.body.length.should.be.eql(7);
+          done();
+        });
+    });
 
   after(function () {
     try {
