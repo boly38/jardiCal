@@ -80,6 +80,21 @@ class ApiV0 {
     });
   }
 
+  static getTypes() {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v0/types`)
+      .catch(reject)
+      .then(response => ApiV0._response(response, resolve, reject));
+    });
+  }
+  static getFamilies() {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v0/families`)
+      .catch(reject)
+      .then(response => ApiV0._response(response, resolve, reject));
+    });
+  }
+
   static _jsonPost() {
     return { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } };
   }

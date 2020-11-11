@@ -42,6 +42,8 @@ router.post('/', function(req, res, next) {
     var entryToAdd = {};
     entryToAdd.nom = req.body.contribNom;
     entryToAdd.nom_scientifique = req.body.contribNomScientifique;
+    entryToAdd.type = req.body.type;
+    entryToAdd.familles = req.body.familles;
     entryToAdd.semi = req.body.semi;
     entryToAdd.plantation = req.body.plantation;
     entryToAdd.floraison = req.body.floraison;
