@@ -215,6 +215,10 @@ function _assumeSuccess(err, res) {
 }
 
 function _setTestMode() {
+    if(!('JARDI_TEST_MONGO_URI' in process.env)
+    || !('JARDI_TEST_ADMIN_MONGO_DB_NAME' in process.env)) {
+      throw "please setup JARDI_TEST_MONGO_URI and JARDI_TEST_ADMIN_MONGO_DB_NAME";
+    }
     common.MONGO_URI = process.env.JARDI_TEST_MONGO_URI;
     common.MONGO_ADMIN_DB = process.env.JARDI_TEST_ADMIN_MONGO_DB_NAME;
     common.JD = null;

@@ -11,7 +11,6 @@ import JAdmin from './admin/JAdmin';
 import JContribuer from './contrib/JContribuer';
 import JAbout from './core/JAbout';
 import History from './core/History';
-import {JConstants} from './core/JConstants'
 import {PageView, initGA} from './services/Tracking';
 import ApiV0 from './services/ApiV0'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,7 +27,7 @@ class JApp extends Component {
   }
 
   componentDidMount() {
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
     PageView();
     if (this.state.about != null || this.state.errorMessage != null) {
       return;

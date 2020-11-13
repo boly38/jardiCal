@@ -23,6 +23,7 @@ jobs:
         - mongo test-jardin      --eval 'db.createUser({user:"jojo",pwd:"papa",roles:["read"]});'
       script:
         - npm install
+        - npm run build
         - npm run travis-test
       after_script:
         - ls /home/travis/.npm/_logs/*

@@ -12,7 +12,7 @@ class JMenu extends Component {
   }
 
   componentDidMount() {
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
   }
 
   onMenuClic(menuEntry) {
