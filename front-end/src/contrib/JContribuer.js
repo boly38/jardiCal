@@ -33,7 +33,7 @@ class JContribuer extends Component {
 
   componentDidMount() {
     // DEBUG // console.info('componentDidMount')
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
     this.searchContribs();
     this._refocus();
     document.addEventListener("keydown", this._handleKeyDown);

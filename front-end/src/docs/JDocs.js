@@ -28,7 +28,7 @@ class JDocs extends Component {
       return;
     }
     // DEBUG // console.info('componentDidMount')
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
     this._refocus();
     this.searchDocs();
     document.addEventListener("keydown", this._handleKeyDown);

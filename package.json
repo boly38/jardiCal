@@ -39,11 +39,12 @@
   },
   "scripts": {
     "start": "node --unhandled-rejections=strict bin/www",
+    "build": "npm run rebuild-ui",
     "test": "echo windows test&& set NODE_ENV=test&& mocha --unhandled-rejections=strict tests/*.test.js",
     "debug": "echo windows test debug mode&& set NODE_ENV=test&& set DEBUG=mocha:*&& mocha --unhandled-rejections=strict tests/*.test.js",
     "cover": "echo windows cover&& set NODE_ENV=test&& nyc --reporter text --reporter cobertura --reporter html --lines 66 mocha tests/*.test.js",
     "help1": "echo 'Help: npm run help1'",
-    "rebuild-ui": "pushd front-end&& npm run build&& popd",
+    "rebuild-ui": "cd front-end&& npm install&& npm run build&& cd ..",
     "travis-test": "echo linux travis-test&& export NODE_ENV=test&& nyc --reporter text --reporter cobertura --reporter html --lines 66 mocha tests/*.test.js"
   },
   "dependencies": {
@@ -82,5 +83,6 @@
   },
   "engines": {
     "node": "12"
-  }
+  },
+  "cacheDirectories": ["node_modules", "front-end/node_modules"]
 }

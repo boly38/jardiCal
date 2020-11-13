@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Table} from 'react-bootstrap';
 // import ApiV0 from '../services/ApiV0'
-import {JConstants} from '../core/JConstants'
 import { initGA } from '../services/Tracking';
 import { GiSpottedBug, GiFlowerPot } from 'react-icons/gi';
 import { GrWorkshop, GrHeroku } from 'react-icons/gr';
@@ -10,7 +9,7 @@ import { DiMongodb } from 'react-icons/di';
 
 class JAbout extends Component {
   componentDidMount() {
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
   }
 
   render() {

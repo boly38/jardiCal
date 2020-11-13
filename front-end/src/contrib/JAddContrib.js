@@ -18,7 +18,7 @@ class JAddContrib extends Component {
   }
 
   componentDidMount() {
-    initGA(JConstants.GOOGLE_ANALYTICS_CODE);
+    initGA();
     this._refocus()
     document.addEventListener("keydown", this._handleKeyDown);
   }
