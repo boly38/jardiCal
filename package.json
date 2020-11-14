@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "garden data application - application sur le calendrier du jardin",
   "private": true,
   "author": "Boly38 <boly380@gmail.com>",
@@ -84,5 +84,8 @@
   "engines": {
     "node": "12"
   },
-  "cacheDirectories": ["node_modules", "front-end/node_modules"]
+  "cacheDirectories": [
+    "node_modules",
+    "front-end/node_modules"
+  ]
 }
