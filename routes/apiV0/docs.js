@@ -46,7 +46,18 @@ router.post('/samples', function(req, res, next) {
 
 });
 
-router.delete('/', function(req, res, next) {
+router.delete('/:id', function(req, res, next) {
+  var docId = req.params.id;
+
+  common.jdResponse(res, async function(jd) {
+    await jd.deleteDocuments({id:docId})
+    .catch((err) => common.respondError(res, err))
+    .then((deletedCount) => res.send({"count":deletedCount}));
+  });
+
+});
+
+router.delete('/all', function(req, res, next) {
 
   common.jdResponse(res, async function(jd) {
     await jd.deleteAllDocuments()
@@ -55,5 +66,4 @@ router.delete('/', function(req, res, next) {
   });
 
 });
-
 module.exports = router;

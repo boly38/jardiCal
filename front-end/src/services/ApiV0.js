@@ -48,9 +48,17 @@ class ApiV0 {
     });
   }
 
+  static removeDocument(documentId) {
+    return new Promise((resolve, reject) => {
+      fetch('/api/v0/docs/' + documentId, { method: 'DELETE' })
+      .catch(reject)
+      .then(response => ApiV0._response(response, resolve, reject));
+    });
+  }
+
   static removeAllDocs() {
     return new Promise((resolve, reject) => {
-      fetch(`/api/v0/docs`, { method: 'DELETE' })
+      fetch(`/api/v0/docs/all`, { method: 'DELETE' })
       .catch(reject)
       .then(response => ApiV0._response(response, resolve, reject));;
     });
@@ -87,6 +95,7 @@ class ApiV0 {
       .then(response => ApiV0._response(response, resolve, reject));
     });
   }
+
   static getFamilies() {
     return new Promise((resolve, reject) => {
       fetch(`/api/v0/families`)

@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Table, Button} from 'react-bootstrap';
-import { AiOutlineCloseSquare, AiOutlineForm } from 'react-icons/ai';
+import { AiOutlineCloseSquare, AiOutlineForm, AiOutlineDelete } from 'react-icons/ai';
 import './JDoc.css';
 import JPeriod from '../common/JPeriod';
+import ApiV0 from '../services/ApiV0'
 
 const ESCAPE_KEY = 27;
 const DOWN_ARROW = 40;
+const SUPPR_KEY = 46;
 
 class JDoc extends Component {
   constructor(props) {
@@ -25,7 +27,10 @@ class JDoc extends Component {
       switch( event.keyCode ) {
           case ESCAPE_KEY: this.onUnselect(); break;
           case DOWN_ARROW: this.onEdit(); break;
-          default: break;
+          case SUPPR_KEY: this.onRemove(); break;
+          default:
+            // DEBUG // console.info(event.keyCode);
+            break;
       }
   }
 
@@ -35,6 +40,14 @@ class JDoc extends Component {
 
   onEdit() {
     document.location = this.state.editLink;
+  }
+
+  onRemove() {
+    ApiV0.removeDocument(this.props.doc._id)
+      .then((deleteResult) => this.onUnselect())
+      .catch((removeErrorMessage) => {
+        console.error(removeErrorMessage);
+      });
   }
 
   render() {
@@ -50,6 +63,14 @@ class JDoc extends Component {
                    onClick={this.onEdit.bind(this)}
                    title="Modifier (raccourci: <Flèche du bas>)"
               >Modifier <AiOutlineForm /></Button>
+          </td>
+         ) : (null) }
+         { this.props.roles && this.props.roles.includes('owner') ? (
+          <td>
+           <Button variant="secondary" size="sm mr-2 mt-2"
+                   onClick={this.onRemove.bind(this)}
+                   title="Supprimer (raccourci: <Suppr>)"
+              >Supprimer <AiOutlineDelete /></Button>
           </td>
          ) : (null) }
          <td>
