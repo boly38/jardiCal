@@ -176,7 +176,7 @@ describe('server endpoints', () => {
         });
     });
 
-    it("should list familieswith " + API_V0_FAMILIES, function(done) {
+    it("should list families with " + API_V0_FAMILIES, function(done) {
       chai.request(server)
         .get(API_V0_FAMILIES)
         .set('Accept', 'application/json; charset=utf-8')
